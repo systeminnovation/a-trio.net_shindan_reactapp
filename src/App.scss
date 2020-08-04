@@ -1,5 +1,6 @@
 .App {
-  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .App-logo {
@@ -34,5 +35,38 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+
+.c-choices-table{
+  min-width: 700px;
+  margin-bottom: 3em;
+  >tbody{
+    >tr{
+      >td{
+
+      }
+
+    }
+  }
+
+
+}
+
+.c-result-table{
+  border-collapse: collapse;;
+
+  >tbody{
+    >tr{
+      >td,>th{
+        border-bottom: 1px solid #aaa;
+      }
+
+      >th{
+        text-align: left;
+
+      }
+    }
   }
 }

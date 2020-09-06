@@ -1,0 +1,17 @@
+
+.c-content-column{
+    max-width: $contents-width;
+
+    margin-left: auto;
+    margin-right: auto;
+
+
+    &.is-wide{
+        max-width: $wide-width;
+    }
+
+    @include tab{
+        padding-left:  $contents-padding;
+        padding-right: $contents-padding;
+    }
+}

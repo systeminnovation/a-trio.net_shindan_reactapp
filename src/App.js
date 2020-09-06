@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './App.scss';
+import './scss/App.scss';
 import './ChoicesTable.js';
 import ChoicesTable from './ChoicesTable.js';
 import ResultTable from './ResultTable.js';
@@ -56,8 +56,15 @@ function App() {
 
 
   return (
-    <div className="App">
-      <p>１：全くそうではない　2：そうではない　3：その通り　4：全くその通り </p>
+    <div className="c-content-column">
+      <h1>a-trio 適職診断</h1>
+      <p>キャリアを考える第一歩は、自分を知ることです。a-trioでは、その最初の一歩として、適職診断をおこなっています。ここでは、20個の質問に答えるだけの簡易版により、自分の適性を見ることができます。１つの質問について、4つの選択肢があります。</p>
+      <p>１：全くそうではない　<br/>2：そうではない　<br/>3：その通り　<br/>4：全くその通り </p>
+      <p>のうち、当てはまるものを選んでください。考え込まずに、直感で答えましょう。</p>
+
+      <hr className="c-hr u-mb-50 u-mt-50"/>
+
+
       <ChoicesTable 
         questionTitle="いちばん満足できるのは、自分の技能と努力の結果として何かを成し得たときだ" 
         categoryId="organization" 

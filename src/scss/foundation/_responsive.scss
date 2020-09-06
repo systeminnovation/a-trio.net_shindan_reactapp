@@ -1,0 +1,34 @@
+@mixin medium {
+    @media screen and (max-width: 1400px) {
+        @content;
+    }
+}
+
+
+@mixin tab {
+    @media screen and (max-width: $contents-width + 120) {
+        @content;
+    }
+}
+    @mixin tab-up {
+        @media screen and (min-width: $contents-width + 120 +1) {
+            @content;
+        }
+    }
+
+@mixin sp {
+    @media screen and (max-width: 760px) {
+        @content;
+    }
+}
+    @mixin sp-up{
+        @media screen and (min-width: 761px) {
+            @content;
+        }
+    }
+
+@mixin small {
+    @media screen and (max-width: 365px) {
+        @content;
+    }
+}

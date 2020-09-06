@@ -1,0 +1,9 @@
+
+
+.u-full-width{
+
+    @include sp{
+        margin-left: -$contents-padding !important;
+        margin-right: -$contents-padding !important;
+    }
+}

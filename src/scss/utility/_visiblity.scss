@@ -1,0 +1,26 @@
+/* 表示&非表示を操作する系ユーティリティ */
+.u-hide {
+    display: none;
+}
+
+.u-pc {
+    @include sp {
+        display: none;
+    }
+}
+
+.u-sp {
+    display: none;
+    
+    @include sp {
+        display: inline-block;
+    }
+}
+
+.u-small-br {
+    display: none;
+
+    @include small {
+        display: block;
+    }
+}

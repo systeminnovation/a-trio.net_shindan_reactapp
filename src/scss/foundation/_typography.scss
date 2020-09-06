@@ -1,0 +1,30 @@
+
+@mixin font-normal {
+    font-family: 'Noto Sans JP', sans-serif;
+}
+
+@mixin font-bold{
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 700;
+}
+
+
+@mixin font-shueikana{
+    font-family: dnp-shuei-4gob-std, sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+
+body {
+
+    @include font-normal;
+    font-size: 1.6rem;
+
+}
+
+/* IEはMeiryoで表示。文字が上に寄ってしまうバグがあるから　*/
+_:-ms-fullscreen,
+:root body {
+  font-family: Meiryo, sans-serif;
+}

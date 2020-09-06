@@ -1,0 +1,40 @@
+/* 文字を操作する系ユーティリティ */
+
+.u-minchou {font-family: serif;}
+.u-gothic {font-family: fot-udkakugo-large-pr6n, sans-serif;}
+.u-fontS {font-size:1.2rem;}
+.u-fontM {
+    font-size:2.2rem;
+    
+    @include tab {
+        font-size: 1.5rem;
+    }
+}
+.u-fontL {
+    font-size: 3rem;
+    
+    @include small {
+        font-size: 2.6rem;
+    }
+}
+.u-fontN {
+    font-size: 1.6rem;
+    
+    @include tab {
+        font-size: 1.4rem;
+    }
+}
+.u-fontWhite {color:#fff;}
+.u-fontRed {color:$color-main;}
+.u-normal {font-weight: 300;}
+.u-bold {font-weight: 600;}
+.u-lsThin {letter-spacing:-.05em;}
+.u-lsWide {letter-spacing:.1em;}
+.u-lh1 {line-height:1;}
+.u-lh2 {line-height:2;}
+.u-lh3 {line-height:3;}
+.u-lh4 {line-height:4;}
+.u-tal, .textleft, .alignleft {text-align: left!important;}
+.u-tac, .textcenter, .aligncenter {text-align: center!important;}
+.u-tar, .textright, .alignright {text-align: right!important;}
+.u-taj, .textjustify, .alignjustify {text-align: justify!important;}

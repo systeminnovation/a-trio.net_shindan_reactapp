@@ -1,0 +1,55 @@
+/*
+    .u-mb-0{
+        margin-bottom:0 !important;
+    }
+
+    .u-mr-5{
+        margin-right:5rem !important;
+    }
+
+    .u-mt-15{
+        margin-right:15rem !important;
+    }
+*/
+
+$sides: (
+    top:"t",
+    right:"r",
+    bottom:"b",
+    left:"l"
+);
+
+@each $side in map-keys($sides){
+    @for $i from 0 through 30 {
+        .u-m#{map-get($sides,$side)}-#{$i*10}{
+            margin-#{$side}:#{$i*10}px !important;
+        }
+    }
+    @include sp{
+        @for $i from 0 through 30 {
+            .u-sp-m#{map-get($sides,$side)}-#{$i*10}{
+                margin-#{$side}:#{$i*10}px !important;
+            }
+        }
+    }
+}
+
+
+
+
+@each $side in map-keys($sides){
+    @for $i from 0 through 30 {
+        .u-p#{map-get($sides,$side)}-#{$i*10}{
+            padding-#{$side}:#{$i*10}px !important;
+        }
+    }
+    @include sp{
+        @for $i from 0 through 30 {
+            .u-sp-p#{map-get($sides,$side)}-#{$i*10}{
+                padding-#{$side}:#{$i*10}px !important;
+            }
+        }
+    }
+}
+
+

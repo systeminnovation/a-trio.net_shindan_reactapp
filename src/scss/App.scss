@@ -1,0 +1,179 @@
+
+/*
+*/
+
+/* ベース
+------------------------------------*/
+@import "foundation/variables";
+@import "foundation/ress";
+@import "foundation/responsive";
+@import "foundation/basic";
+@import "foundation/typography";
+@import "foundation/layer";
+@import "foundation/mixins";
+
+/* 共通パーツ
+------------------------------------*/
+@import "components/content-column";
+@import "components/grid";
+
+
+/* ユーティリティー
+------------------------------------*/
+@import "utility/margins";
+@import "utility/text";
+@import "utility/visiblity";
+@import "utility/full-width";
+
+
+.c-choices-table{
+  border-collapse: collapse;;
+  margin-bottom: 30px;
+  border-left: 1px solid #ccc; 
+  padding-left: 20px;
+
+  @include sp-up{
+    margin-bottom: 50px;
+  }
+
+  >.e-question{
+
+    margin-bottom: 10px;
+
+  }
+
+  >.e-answers{
+    display: flex;
+    justify-content: space-between;
+
+    list-style: none;
+
+    >.e-answer{
+
+    }
+  }
+}
+
+.c-answer-button{
+  .e-radio{
+    display: none;
+    &:checked+.e-number{
+      @extend .is-active;
+
+    }
+  }
+
+  .e-number{
+    display: inline-flex;
+      justify-content: center;
+      align-items: center;
+
+    width: 45px;
+    height: 45px;
+
+    border-radius: 50%;
+    background: #eee;
+
+    box-shadow: 1px 1px 1px rgba(#000, .5);
+
+    transition: background-color 1s, box-shadow .5s;
+
+    &.is-active{
+      //border: 4px solid ;
+      background: $color-atrio-orange;
+      //font-size: 1.4em;
+      font-weight: bold;
+      box-shadow: 3px 3px 5px rgba(#000, .4);
+    }
+
+
+    @include sp-up{
+      width: 55px;
+      height: 55px;
+    }
+
+  }
+
+}
+
+
+.c-result-bar{
+
+  .e-title{
+    text-align: center;
+    font-weight: bold;
+  }
+  .e-graph{
+    display: flex;
+    align-items: center;
+    
+
+    .e-left,
+    .e-right{
+      flex: 0 0 100px;
+    }
+    .e-right{
+      text-align: right;
+    }
+
+
+    .e-bar{
+      $height:   40px;
+      $size: 30px;// 丸のサイズ
+
+      flex: 1 1 auto;
+      position: relative;
+
+      
+      background: #eee;
+      height:  $height;
+      
+
+      .e-line{
+        position: absolute;
+          top: 50%;
+        width: 100%;
+        border-bottom: 1px solid #666;
+
+      }
+      .e-memoris{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 0 -1px;
+
+        .e-memori{
+          height: $height /2;
+          border-left: 2px solid #666;
+
+          &:first-of-type,
+          &:last-of-type{
+            height: $height ;
+
+          }
+        }
+
+      }
+      .e-point{
+
+
+        position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 50%;
+
+        margin-top:auto;
+        margin-bottom: auto;
+        margin-left: -$size/2;
+
+        width: $size;
+        height: $size;
+        border-radius: 50%;
+        border: 3px solid $color-atrio-orange;
+
+        background: rgba(#fff, .8);
+      }
+    }
+  }
+
+}

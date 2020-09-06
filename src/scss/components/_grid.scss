@@ -1,0 +1,59 @@
+
+@mixin grid($gutter:40, $reverse:false){
+    display: flex;
+    flex-wrap: wrap;
+
+    margin-left: #{- $gutter / 2}px;
+    margin-right: #{- $gutter / 2}px;
+
+
+    &.is-reverse{
+        flex-direction: row-reverse;
+    }
+
+    @if($reverse){
+        flex-direction: row-reverse;
+    }
+}
+
+@mixin grid__cell($colspan:1, $gutter:40){
+    flex: 0 0 auto;
+    $num : 12  / $colspan ;
+
+    width: calc((100% - #{$num} * #{$gutter}px) / #{$num});
+
+
+    margin-left: #{$gutter / 2}px;
+    margin-right: #{$gutter / 2}px;
+
+
+}
+
+
+.c-grid{
+    $default-gutter: 40;
+    @include grid($default-gutter);
+
+    &.is-reverse{
+        @include grid($default-gutter, $reverse: true);
+    }
+
+    >.c-grid__cell{
+        //pc grid colspan
+        @for $i from 1 to 12{
+            &.is-#{$i}{
+                @include grid__cell($i, $default-gutter);
+            }
+        }
+
+        //sp gric colspan
+        @include sp{
+            @for $i from 1 to 13{
+                &.is-sp-#{$i}{
+                    @include grid__cell($i, $default-gutter);
+                }
+            }
+        }
+
+    }
+}

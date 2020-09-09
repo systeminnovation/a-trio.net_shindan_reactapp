@@ -1,0 +1,41 @@
+/* ボタン */
+.c-button{
+    $height: 69px;
+
+    position: relative;
+
+    display: inline-flex;
+        justify-content: center;
+        align-items: center;
+
+
+    height:$height;
+    min-width: 295px;
+
+    border-top: lighten($color-atrio-orange, 20%) 3px solid; 
+    border-bottom: darken($color-atrio-orange, 10%) 3px solid; 
+
+    background: $color-atrio-orange;
+    border-radius: $height/2;
+    font-size: 1.7rem;
+
+
+
+    &.is-width-full{
+        display: flex; //block
+        margin: 0 auto;
+
+    }
+
+    &.is-medium{
+        $height: 51px;
+        height: $height;
+        font-size: 1.4rem;;
+    }
+
+    &.is-icon-inline{
+        &::after{
+            position: static;
+        }
+    }
+}

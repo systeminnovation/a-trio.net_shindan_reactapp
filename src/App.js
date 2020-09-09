@@ -1,42 +1,93 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './scss/App.scss';
 import './ChoicesTable.js';
 import ChoicesTable from './ChoicesTable.js';
 import ResultTable from './ResultTable.js';
 
+import rechart, { RadarChart, PolarGrid, PolarAngleAxis, Radar, Tooltip} from 'recharts';
+
+import { BrowserRouter as Router, Route,  Link, useLocation } from 'react-router-dom'
+
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
+
+
+const manzokuJP = {
+  shigoto: "仕事",
+  okane: "お金",
+  kenkou: "健康",
+  aijou: "愛情",
+  yuujin: "友人",
+  chishiki: "知識",
+  shumi: "趣味",
+  busshitsu: "物質",
+};
 
 function App() {
 
+  const [manzokus, setManzokus] = useState({
+    shigoto: 50,
+    okane: 50,
+    kenkou: 50,
+    aijou: 50,
+    yuujin: 50,
+    chishiki: 50,
+    shumi: 50,
+    busshitsu: 50,
+  });
+
+
+  //表示させたいデータ群
+  const dataRadar = Object.keys(manzokus).map(key=>{
+    const manzoku = manzokus[key];
+
+    return {
+      rank: manzokuJP[key], 
+      value: manzoku
+    };
+  });
+  /*
+  [
+    { rank: '国語', value: 120 },
+    { rank: '数学', value: 85 },
+    { rank: '理科', value: 65 },
+    { rank: '社会', value: 35 },
+    { rank: '英語', value: 35 },
+    ];*/
+
+  const onChangeManzoku = (key, value)=>{
+    let num = parseInt(value)
+    
+    if(isNaN(num)){
+      num = null;
+    }
+
+    setManzokus({
+      ...manzokus,
+      [key]:num
+    });
+  }
+
   const [answers, setAnswers] = useState({
     human:{
-      q1: null,
-      q2: null,
-      q3: null,
-      q4: null,
-      q5: null,
+      q1: null, q2: null, q3: null, q4: null, q5: null,
     },
     creative:{
-      q1: null,
-      q2: null,
-      q3: null,
-      q4: null,
-      q5: null,
+      q1: null, q2: null, q3: null, q4: null, q5: null,
     },
-
     organization:{
-      q1: null,
-      q2: null,
-      q3: null,
-      q4: null,
-      q5: null,
+      q1: null, q2: null, q3: null, q4: null, q5: null,
     },
-
     stability:{
-      q1: null,
-      q2: null,
-      q3: null,
-      q4: null,
-      q5: null,
+      q1: null, q2: null, q3: null, q4: null, q5: null,
     },
   });
 
@@ -54,142 +105,224 @@ function App() {
 
   };
 
+  function ManzokuInput({title, property}){ //純粋ではないのでここにある
+    return (
+      <div className="c-manzoku-input">
+        <div className="e-title" dangerouslySetInnerHTML={{__html:title}}></div>
+        <div className="e-text">
+          <input className="c-input-number" type="number" 
+            value={manzokus[property]} 
+            onChange={(e)=>onChangeManzoku(property, e.target.value )}/>%
+        </div>
+        <div className="e-range">
+          <input type="range" min="0" max="100" className="c-input-range"
+            value={manzokus[property]}
+            onChange={(e)=>onChangeManzoku(property, e.target.value )}/>
+        </div>
+      </div>
+    );
+  }
+
 
   return (
-    <div className="c-content-column">
-      <h1>a-trio 適職診断</h1>
-      <p>キャリアを考える第一歩は、自分を知ることです。a-trioでは、その最初の一歩として、適職診断をおこなっています。ここでは、20個の質問に答えるだけの簡易版により、自分の適性を見ることができます。１つの質問について、4つの選択肢があります。</p>
-      <p>１：全くそうではない　<br/>2：そうではない　<br/>3：その通り　<br/>4：全くその通り </p>
-      <p>のうち、当てはまるものを選んでください。考え込まずに、直感で答えましょう。</p>
+    <Router>
 
-      <hr className="c-hr u-mb-50 u-mt-50"/>
+      <ScrollToTop></ScrollToTop>
 
 
-      <ChoicesTable 
-        questionTitle="いちばん満足できるのは、自分の技能と努力の結果として何かを成し得たときだ" 
-        categoryId="organization" 
-        questionId="q3"
-        onChange={onSelectHandler}
-      />
-      <ChoicesTable 
-        questionTitle="既成概念にとらわれない発想ができる" 
-        categoryId="creative" 
-        questionId="q2"
-        onChange={onSelectHandler}
-      />
-      <ChoicesTable 
-        questionTitle="人から感謝される仕事がしたい" 
-        categoryId="human" 
-        questionId="q1"
-        onChange={onSelectHandler}
-      />
-      <ChoicesTable 
-        questionTitle="自分で事業を立ち上げ、軌道に乗せていくことが夢だ" 
-        categoryId="organization" 
-        questionId="q5"
-        onChange={onSelectHandler}
-      />
-      <ChoicesTable 
-        questionTitle="自由と裁量より、保障と安定のほうが自分にとっては大切だ" 
-        categoryId="stability" 
-        questionId="q1"
-        onChange={onSelectHandler}
-      />
-      <ChoicesTable 
-        questionTitle="結果や内容で評価される職場で働きたい" 
-        categoryId="creative" 
-        questionId="q1"
-        onChange={onSelectHandler}
-      />
-      <ChoicesTable 
-        questionTitle="よいキャリアだと実感できるのは、自分なりのアイデアと技能を元にして起業するときだ" 
-        categoryId="organization" 
-        questionId="q4"
-        onChange={onSelectHandler}
-      />
-      <ChoicesTable 
-        questionTitle="意にそぐわない配置をして雇用を脅かすような組織には長くとどまろうとは思わない" 
-        categoryId="stability" 
-        questionId="q2"
-        onChange={onSelectHandler}
-      />
-      <ChoicesTable 
-        questionTitle="対人サービスの仕事に興味がある" 
-        categoryId="human" 
-        questionId="q2"
-        onChange={onSelectHandler}
-      />
-      <ChoicesTable 
-        questionTitle="こだわりが強いほうだ" 
-        categoryId="creative" 
-        questionId="q3"
-        onChange={onSelectHandler}
-      />
-      <ChoicesTable 
-        questionTitle="仕事は自分で作るものだと思う" 
-        categoryId="creative" 
-        questionId="q4"
-        onChange={onSelectHandler}
-      />
-      <ChoicesTable 
-        questionTitle="話すことが得意である" 
-        categoryId="human" 
-        questionId="q3"
-        onChange={onSelectHandler}
-      />
-      <ChoicesTable 
-        questionTitle="ふだん組織の中では、安全と保障を実感できる仕事を求めている" 
-        categoryId="stability" 
-        questionId="q3"
-        onChange={onSelectHandler}
-      />
-      <ChoicesTable 
-        questionTitle="キャリアで安定と保障を実感できるのが夢だ" 
-        categoryId="stability" 
-        questionId="q4"
-        onChange={onSelectHandler}
-      />
-      <ChoicesTable 
-        questionTitle="コミュニケーションが得意" 
-        categoryId="human" 
-        questionId="q4"
-        onChange={onSelectHandler}
-      />
-      <ChoicesTable 
-        questionTitle="自分の作品を作るような仕事がしたい" 
-        categoryId="creative" 
-        questionId="q5"
-        onChange={onSelectHandler}
-      />
-      <ChoicesTable 
-        questionTitle="人と関わる仕事がしたい" 
-        categoryId="human" 
-        questionId="q5"
-        onChange={onSelectHandler}
-      />
-      <ChoicesTable 
-        questionTitle="自分で会社を起こす元となりそうなアイデアをいつも注意して探している" 
-        categoryId="organization" 
-        questionId="q1"
-        onChange={onSelectHandler}
-      />
-      <ChoicesTable 
-        questionTitle="どこかの組織で高い地位を得るより、自分自身で事業を起こすことのほうが大切だと思う" 
-        categoryId="organization" 
-        questionId="q2"
-        onChange={onSelectHandler}
-      />
-      <ChoicesTable 
-        questionTitle="自分の職業人生でいちばん満足できるのは、経済面・雇用面での安定を感じられるときだ" 
-        categoryId="stability" 
-        questionId="q5"
-        onChange={onSelectHandler}
-      />
+      <div className="c-content-column">
+        <h1 class="u-tac">a-trio 幸せなお仕事診断</h1>
 
-      <ResultTable answers={answers}/>
+        <Route exact path='/tekishoku' render={()=>( <>
 
-    </div>
+          <p className="u-tac u-mb-20">
+            【あなたは今、自分の状況にどれくらい満足していますか？】<br/> 
+          </p>
+          <p className="u-mb-50">
+
+            “幸せなおしごと・働き方”探しは、自分についてじっくり考えることから始まります。<br/><br/>
+
+            キャリアデザインを考える場合、自分だけでなく、家族など周りの人達へも影響を与えること<br/>
+            があります。だからこそ、自分の価値観を大切に、将来のビジョンをイメージしておくことが、<br/>
+            自分や家族の幸せのためにも大切なことなのです。<br/><br/>
+
+            後半は適職を探すヒントにしていただくための診断です。<br/><br/>
+
+            私にとっての幸せな働き方・おしごとは何か、是非、一緒に考えていきましょう。<br/>
+          </p>
+
+          <hr className="u-mb-40 u-mt-40"/>
+
+          <h2>現在の満足度</h2>
+          <p className="u-mb-20">
+            あなたは現在の生活にどの程度満足していますか？ それぞれの項目に対して、0〜100%で数値化してみましょう。
+          </p>
+
+
+          <ManzokuInput title="仕事" property="shigoto" />
+          <ManzokuInput title="お金" property="okane" />
+          <ManzokuInput title="健康" property="kenkou" />
+          <ManzokuInput title="愛情（家族・恋人）" property="aijou" />
+
+          <ManzokuInput title="友人関係" property="yuujin" />
+          <ManzokuInput title="知識・学び" property="chishiki" />
+          <ManzokuInput title="趣味" property="shumi" />
+          <ManzokuInput title="住んでいる場所・<br/>環境など物質面" property="busshitsu" />
+
+
+
+          <h2>おしごと傾向診断 簡易版</h2>
+          <p>１：全くそうではない　<br/>2：そうではない　<br/>3：その通り　<br/>4：全くその通り </p>
+          <p>のうち、当てはまるものを選んでください。考え込まずに、直感で答えましょう。</p>
+
+          <hr className="c-hr u-mb-50 u-mt-50"/>
+
+
+          <ChoicesTable 
+            questionTitle="いちばん満足できるのは、自分の技能と努力の結果として何かを成し得たときだ" 
+            categoryId="organization" questionId="q3" onChange={onSelectHandler} />
+          <ChoicesTable 
+            questionTitle="既成概念にとらわれない発想ができる" 
+            categoryId="creative" questionId="q2" onChange={onSelectHandler} />
+          <ChoicesTable 
+            questionTitle="人から感謝される仕事がしたい" 
+            categoryId="human" questionId="q1" onChange={onSelectHandler} />
+          <ChoicesTable 
+            questionTitle="自分で事業を立ち上げ、軌道に乗せていくことが夢だ" 
+            categoryId="organization" questionId="q5" onChange={onSelectHandler} />
+          <ChoicesTable 
+            questionTitle="自由と裁量より、保障と安定のほうが自分にとっては大切だ" 
+            categoryId="stability" questionId="q1" onChange={onSelectHandler} />
+          <ChoicesTable 
+            questionTitle="結果や内容で評価される職場で働きたい" 
+            categoryId="creative" questionId="q1" onChange={onSelectHandler} />
+          <ChoicesTable 
+            questionTitle="よいキャリアだと実感できるのは、自分なりのアイデアと技能を元にして起業するときだ" 
+            categoryId="organization" questionId="q4" onChange={onSelectHandler} />
+          <ChoicesTable 
+            questionTitle="意にそぐわない配置をして雇用を脅かすような組織には長くとどまろうとは思わない" 
+            categoryId="stability" questionId="q2" onChange={onSelectHandler} />
+          <ChoicesTable 
+            questionTitle="対人サービスの仕事に興味がある" 
+            categoryId="human" questionId="q2" onChange={onSelectHandler} />
+          <ChoicesTable 
+            questionTitle="こだわりが強いほうだ" 
+            categoryId="creative" questionId="q3" onChange={onSelectHandler} />
+          <ChoicesTable 
+            questionTitle="仕事は自分で作るものだと思う" 
+            categoryId="creative" questionId="q4" onChange={onSelectHandler} />
+          <ChoicesTable 
+            questionTitle="話すことが得意である" 
+            categoryId="human" questionId="q3" onChange={onSelectHandler} />
+          <ChoicesTable 
+            questionTitle="ふだん組織の中では、安全と保障を実感できる仕事を求めている" 
+            categoryId="stability" questionId="q3" onChange={onSelectHandler} />
+          <ChoicesTable 
+            questionTitle="キャリアで安定と保障を実感できるのが夢だ" 
+            categoryId="stability" questionId="q4" onChange={onSelectHandler} />
+          <ChoicesTable 
+            questionTitle="コミュニケーションが得意" 
+            categoryId="human" questionId="q4" onChange={onSelectHandler} />
+          <ChoicesTable 
+            questionTitle="自分の作品を作るような仕事がしたい" 
+            categoryId="creative" questionId="q5" onChange={onSelectHandler} />
+          <ChoicesTable 
+            questionTitle="人と関わる仕事がしたい" 
+            categoryId="human" questionId="q5" onChange={onSelectHandler} />
+          <ChoicesTable 
+            questionTitle="自分で会社を起こす元となりそうなアイデアをいつも注意して探している" 
+            categoryId="organization" questionId="q1" onChange={onSelectHandler} />
+          <ChoicesTable 
+            questionTitle="どこかの組織で高い地位を得るより、自分自身で事業を起こすことのほうが大切だと思う" 
+            categoryId="organization" questionId="q2" onChange={onSelectHandler} />
+          <ChoicesTable 
+            questionTitle="自分の職業人生でいちばん満足できるのは、経済面・雇用面での安定を感じられるときだ" 
+            categoryId="stability" questionId="q5" onChange={onSelectHandler} />
+
+
+          <table class="p-info-table">
+            <tbody>
+              <tr>
+                <th>お名前</th>
+                <td><input className="c-input-text" type="text"/></td>
+              </tr>
+              <tr>
+                <th>メール<br className="u-sp"/>アドレス</th>
+                <td><input className="c-input-text" type="email"/></td>
+              </tr>
+            </tbody>
+          </table> 
+          
+          <p className="u-tac u-mb-100">
+            <Link to="/tekishoku/result" className="c-button is-center">結果を見る</Link>
+          </p>
+
+        </>)}/>
+
+        <Route path='/tekishoku/result' render={()=>( <>
+          <h2 class="u-tac">診断結果</h2>
+          <h3>現在の満足度は？</h3>
+
+          <div className="u-tac">
+
+          <RadarChart // レーダーチャートのサイズや位置、データを指定
+            height={300} //レーダーチャートの全体の高さを指定
+            width={300} //レーダーチャートの全体の幅を指定
+            cx="50%" //要素の左を基準に全体の50%移動
+            cy="50%" //要素の上を基準に全体の50%移動
+            data={dataRadar} //ここにArray型のデータを指定
+            style={{margin: "0 auto"}}
+          >
+            <PolarGrid /> // レーダーのグリッド線を表示
+            <PolarAngleAxis
+              dataKey="rank" //Array型のデータの、数値を表示したい値のキーを指定
+            />
+            <Radar //レーダーの色や各パラメーターのタイトルを指定
+              name="Mike"  //hoverした時に表示される名前を指定 
+              dataKey="value" //Array型のデータのパラメータータイトルを指定
+              stroke="#fbc300"  //レーダーの線の色を指定
+              fill="#fbc300" //レーダーの中身の色を指定
+              fillOpacity={0.6} //レーダーの中身の色の薄さを指定
+            />
+            <Tooltip /> //hoverすると各パラメーターの値が表示される
+          </RadarChart>
+
+
+          </div>
+
+          <div className="p-result-insight u-mb-100">
+            ◆それぞれの項目について100点満点はどういう状態なのか考えてみましょう。
+          </div>
+          
+          <h3>お仕事傾向</h3>
+          <ResultTable answers={answers}/>
+
+          <div className="p-result-insight">
+            <p>
+              ◆幸せな仕事をみつけるための３つの問い（診断結果をふまえて、考えてみましょう）
+            </p>
+
+            <ul className="u-pl-30">
+              <li>あなたが最もワクワクするときはどんな時ですか？</li>
+              <li>今、最も興味・関心のある仕事について、十分に情報収集できていますか？</li>
+              <li>将来に向けて、今すぐ行動できそうなことはありますか？</li>
+            </ul>
+            <p>
+              行動しないと、未来は変わりません。是非、イメージして行動に移してみましょう！
+            </p>
+
+
+
+          </div>
+        </>)}/>
+
+
+      </div>
+
+
+    </Router>
   );
 }
+
 
 export default App;

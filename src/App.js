@@ -5,7 +5,7 @@ import ChoicesTable from './ChoicesTable.js';
 import ResultTable from './ResultTable.js';
 import siteLogo from './img/site-logo.jpg';
 
-import { RadarChart, PolarGrid, PolarAngleAxis, Radar, Tooltip} from 'recharts';
+import { RadarChart, PolarGrid, PolarRadiusAxis,  PolarAngleAxis, Radar, Tooltip} from 'recharts';
 
 import { BrowserRouter as Router, Route,  Link, useLocation } from 'react-router-dom'
 
@@ -268,8 +268,10 @@ function App() {
                   style={{margin: "0 auto"}}
                 >
                   <PolarGrid /> 
-                  <PolarAngleAxis
+                  <PolarAngleAxis //ぐるっと回る軸
                     dataKey="rank" //Array型のデータの、数値を表示したい値のキーを指定
+                  />
+                  <PolarRadiusAxis angle={90} domain={[0, 100]} //放射状の軸
                   />
                   <Radar //レーダーの色や各パラメーターのタイトルを指定
                     name="満足度"  //hoverした時に表示される名前を指定 

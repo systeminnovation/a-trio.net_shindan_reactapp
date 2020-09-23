@@ -32,3 +32,10 @@
         @content;
     }
 }
+
+
+@mixin mq($query){
+    @media #{$query} {
+        @content;
+    }
+}

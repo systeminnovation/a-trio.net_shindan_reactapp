@@ -12,6 +12,11 @@
 @import "foundation/layer";
 @import "foundation/mixins";
 
+
+/* 共通パーツ
+------------------------------------*/
+@import "external/rangeslider";
+
 /* 共通パーツ
 ------------------------------------*/
 @import "components/content-column";
@@ -27,20 +32,51 @@
 @import "utility/full-width";
 
 
+
+
+.p-site-logo{
+  text-align: center;
+  .e-img{
+    vertical-align: middle;
+    height: 50px;
+    margin-right: 10px;
+  }
+
+  .e-title{
+    display: inline-block;
+    white-space: nowrap;
+    font-weight: bold;
+    vertical-align: middle;
+  }
+}
+
+h2{
+  color:  $color-atrio-orange;
+
+}
+
+
+.p-description{
+  background: #faede2;
+  padding: 20px 30px;
+  margin-bottom: 40px;
+}
+
+
 .c-choices-table{
   border-collapse: collapse;;
-  margin-bottom: 30px;
-  border-left: 1px solid #ccc; 
-  padding-left: 20px;
+  padding: 20px 20px 30px;
 
-  @include sp-up{
-    margin-bottom: 50px;
+  &:nth-child(2n){
+    background: #fafafa;
+
   }
 
   >.e-question{
 
     margin-bottom: 10px;
 
+    font-weight: bold;
   }
 
   >.e-answers{
@@ -82,11 +118,11 @@
     &.is-active{
       //border: 4px solid ;
       background: $color-atrio-orange;
+      color: #fff;
       //font-size: 1.4em;
       font-weight: bold;
       box-shadow: 3px 3px 5px rgba(#000, .4);
     }
-
 
     @include sp-up{
       width: 55px;
@@ -99,7 +135,7 @@
 
 
 .c-result-bar{
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 
   .e-title{
     text-align: center;
@@ -259,18 +295,52 @@
 }
 
 
+.p-radar-chart{
+
+  align-items: center;
+  align-content: center;
+
+  @include sp{
+    margin-bottom: 30px;
+  }
+  .p-radar-chart__wrapper{
+    overflow-x: auto;
+
+  }
+}
+
+
 .p-result-insight{
   border: 1px solid #ccc;
   padding: 20px;
 
+  font-size: 1.4rem;
+
+  @include mq('print'){
+    margin-bottom: 0px;
+  }
 
 
 }
 
 .p-info-table{
   width: 100%;
-  th{
 
+  @include mq('print'){
+    display: none;
+  }
+
+  th{
+    text-align: left;
+    line-height: 1.2;
+    padding: 10px 0;
+
+    small{
+      color: #888;
+      
+      white-space: nowrap;
+
+    }
   }
   td{
     input{

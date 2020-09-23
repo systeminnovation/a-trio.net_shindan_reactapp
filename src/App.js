@@ -3,10 +3,14 @@ import './scss/App.scss';
 import './ChoicesTable.js';
 import ChoicesTable from './ChoicesTable.js';
 import ResultTable from './ResultTable.js';
+import siteLogo from './img/site-logo.jpg';
 
-import rechart, { RadarChart, PolarGrid, PolarAngleAxis, Radar, Tooltip} from 'recharts';
+import { RadarChart, PolarGrid, PolarAngleAxis, Radar, Tooltip} from 'recharts';
 
 import { BrowserRouter as Router, Route,  Link, useLocation } from 'react-router-dom'
+
+
+import ManzokuInput from './ManzokuInput';
 
 
 function ScrollToTop() {
@@ -32,7 +36,6 @@ const manzokuJP = {
 };
 
 function App() {
-
   const [manzokus, setManzokus] = useState({
     shigoto: 50,
     okane: 50,
@@ -43,7 +46,6 @@ function App() {
     shumi: 50,
     busshitsu: 50,
   });
-
 
   //表示させたいデータ群
   const dataRadar = Object.keys(manzokus).map(key=>{
@@ -63,17 +65,18 @@ function App() {
     { rank: '英語', value: 35 },
     ];*/
 
-  const onChangeManzoku = (key, value)=>{
-    let num = parseInt(value)
+  const onChangeManzoku = (key)=>(num)=>{
+    console.log("onchange manxoku")
+    console.log(num);
     
-    if(isNaN(num)){
-      num = null;
-    }
 
     setManzokus({
       ...manzokus,
       [key]:num
     });
+    /*
+    return false;
+    */
   }
 
   const [answers, setAnswers] = useState({
@@ -98,31 +101,12 @@ function App() {
     setAnswers({
       ...answers, 
       [categoryId]:{
-        ...answers[categoryId], 
+        ...answers[categoryId],
         [questionId]:value
       }
     });
 
   };
-
-  function ManzokuInput({title, property}){ //純粋ではないのでここにある
-    return (
-      <div className="c-manzoku-input">
-        <div className="e-title" dangerouslySetInnerHTML={{__html:title}}></div>
-        <div className="e-text">
-          <input className="c-input-number" type="number" 
-            value={manzokus[property]} 
-            onChange={(e)=>onChangeManzoku(property, e.target.value )}/>%
-        </div>
-        <div className="e-range">
-          <input type="range" min="0" max="100" className="c-input-range"
-            value={manzokus[property]}
-            onChange={(e)=>onChangeManzoku(property, e.target.value )}/>
-        </div>
-      </div>
-    );
-  }
-
 
   return (
     <Router>
@@ -131,19 +115,22 @@ function App() {
 
 
       <div className="c-content-column">
-        <h1 class="u-tac">a-trio 幸せなお仕事診断</h1>
+        <h1 className="p-site-logo">
+          <img className="e-img" src={siteLogo} alt="a-trio"/>
+          <span className="e-title">幸せなお仕事診断</span>
+        </h1>
 
+        <Route exact path='/' render={()=>(<>
+          <Link to="/tekishoku">適職診断へ</Link>
+        </>)} />
         <Route exact path='/tekishoku' render={()=>( <>
 
-          <p className="u-tac u-mb-20">
-            【あなたは今、自分の状況にどれくらい満足していますか？】<br/> 
-          </p>
-          <p className="u-mb-50">
-
+          <p className="u-tac u-mb-20">あなたは今、自分の状況にどれくらい満足していますか？</p>
+          <p className="p-description">
             “幸せなおしごと・働き方”探しは、自分についてじっくり考えることから始まります。<br/><br/>
 
-            キャリアデザインを考える場合、自分だけでなく、家族など周りの人達へも影響を与えること<br/>
-            があります。だからこそ、自分の価値観を大切に、将来のビジョンをイメージしておくことが、<br/>
+            キャリアデザインを考える場合、自分だけでなく、家族など周りの人達へも影響を与えること
+            があります。だからこそ、自分の価値観を大切に、将来のビジョンをイメージしておくことが、
             自分や家族の幸せのためにも大切なことなのです。<br/><br/>
 
             後半は適職を探すヒントにしていただくための診断です。<br/><br/>
@@ -151,32 +138,34 @@ function App() {
             私にとっての幸せな働き方・おしごとは何か、是非、一緒に考えていきましょう。<br/>
           </p>
 
-          <hr className="u-mb-40 u-mt-40"/>
 
-          <h2>現在の満足度</h2>
+          <h2>現在の満足度診断</h2>
           <p className="u-mb-20">
-            あなたは現在の生活にどの程度満足していますか？ それぞれの項目に対して、0〜100%で数値化してみましょう。
+            あなたは現在の生活にどの程度満足していますか？ それぞれの項目の満足度を0〜100%で数値化してみましょう。
           </p>
 
 
-          <ManzokuInput title="仕事" property="shigoto" />
-          <ManzokuInput title="お金" property="okane" />
-          <ManzokuInput title="健康" property="kenkou" />
-          <ManzokuInput title="愛情（家族・恋人）" property="aijou" />
+          <ManzokuInput title="仕事" 
+            defaultValue={manzokus["shigoto"]} onChange={onChangeManzoku("shigoto")}/>
+          <ManzokuInput title="お金" 
+            defaultValue={manzokus["okane"]} onChange={onChangeManzoku("okane")}/>
+          <ManzokuInput title="健康" 
+            defaultValue={manzokus["kenkou"]} onChange={onChangeManzoku("kenkou")}/>
+          <ManzokuInput title="愛情（家族・恋人）" 
+            defaultValue={manzokus["aijou"]} onChange={onChangeManzoku("aijou")}/>
 
-          <ManzokuInput title="友人関係" property="yuujin" />
-          <ManzokuInput title="知識・学び" property="chishiki" />
-          <ManzokuInput title="趣味" property="shumi" />
-          <ManzokuInput title="住んでいる場所・<br/>環境など物質面" property="busshitsu" />
-
-
+          <ManzokuInput title="友人関係" 
+            defaultValue={manzokus["yuujin"]} onChange={onChangeManzoku("yuujin")}/>
+          <ManzokuInput title="知識・学び" 
+            defaultValue={manzokus["chishiki" ]} onChange={onChangeManzoku("chishiki")}/>
+          <ManzokuInput title="趣味" 
+            defaultValue={manzokus["shumi" ]} onChange={onChangeManzoku("shumi")}/>
+          <ManzokuInput title="住んでいる場所・<br/>環境など物質面" 
+            defaultValue={manzokus["busshitsu" ]} onChange={onChangeManzoku("busshitsu")}/>
 
           <h2>おしごと傾向診断 簡易版</h2>
           <p>１：全くそうではない　<br/>2：そうではない　<br/>3：その通り　<br/>4：全くその通り </p>
           <p>のうち、当てはまるものを選んでください。考え込まずに、直感で答えましょう。</p>
-
-          <hr className="c-hr u-mb-50 u-mt-50"/>
-
 
           <ChoicesTable 
             questionTitle="いちばん満足できるのは、自分の技能と努力の結果として何かを成し得たときだ" 
@@ -240,10 +229,14 @@ function App() {
             categoryId="stability" questionId="q5" onChange={onSelectHandler} />
 
 
-          <table class="p-info-table">
+          <table className="p-info-table u-mt-20 u-mb-20">
             <tbody>
               <tr>
-                <th>お名前</th>
+                <th>
+                  お名前
+                  <br className="u-sp"/>
+                  <small>ニックネーム可</small>
+                </th>
                 <td><input className="c-input-text" type="text"/></td>
               </tr>
               <tr>
@@ -260,44 +253,49 @@ function App() {
         </>)}/>
 
         <Route path='/tekishoku/result' render={()=>( <>
-          <h2 class="u-tac">診断結果</h2>
-          <h3>現在の満足度は？</h3>
+          <h2 className="u-tac">診断結果</h2>
 
-          <div className="u-tac">
+          <h3 className="u-tal">現在の満足度は？</h3>
+          <div className="c-grid p-radar-chart">
+            <div className="c-grid__cell is-6 is-sp-12 u-tac"> 
+              <div className="p-radar-chart__wrapper">
+                <RadarChart // レーダーチャートのサイズや位置、データを指定
+                  height={300} //レーダーチャートの全体の高さを指定
+                  width={320} //レーダーチャートの全体の幅を指定
+                  cx="50%" //要素の左を基準に全体の50%移動
+                  cy="50%" //要素の上を基準に全体の50%移動
+                  data={dataRadar} //ここにArray型のデータを指定
+                  style={{margin: "0 auto"}}
+                >
+                  <PolarGrid /> 
+                  <PolarAngleAxis
+                    dataKey="rank" //Array型のデータの、数値を表示したい値のキーを指定
+                  />
+                  <Radar //レーダーの色や各パラメーターのタイトルを指定
+                    name="満足度"  //hoverした時に表示される名前を指定 
+                    dataKey="value" //Array型のデータのパラメータータイトルを指定
+                    stroke="#fbc300"  //レーダーの線の色を指定
+                    fill="#fbc300" //レーダーの中身の色を指定
+                    fillOpacity={0.6} //レーダーの中身の色の薄さを指定
+                  />
+                  <Tooltip />
+                </RadarChart>
 
-          <RadarChart // レーダーチャートのサイズや位置、データを指定
-            height={300} //レーダーチャートの全体の高さを指定
-            width={300} //レーダーチャートの全体の幅を指定
-            cx="50%" //要素の左を基準に全体の50%移動
-            cy="50%" //要素の上を基準に全体の50%移動
-            data={dataRadar} //ここにArray型のデータを指定
-            style={{margin: "0 auto"}}
-          >
-            <PolarGrid /> // レーダーのグリッド線を表示
-            <PolarAngleAxis
-              dataKey="rank" //Array型のデータの、数値を表示したい値のキーを指定
-            />
-            <Radar //レーダーの色や各パラメーターのタイトルを指定
-              name="Mike"  //hoverした時に表示される名前を指定 
-              dataKey="value" //Array型のデータのパラメータータイトルを指定
-              stroke="#fbc300"  //レーダーの線の色を指定
-              fill="#fbc300" //レーダーの中身の色を指定
-              fillOpacity={0.6} //レーダーの中身の色の薄さを指定
-            />
-            <Tooltip /> //hoverすると各パラメーターの値が表示される
-          </RadarChart>
+              </div>
+            </div>
+            <div className="c-grid__cell is-6 is-sp-12">
 
+              <div className="p-result-insight u-sp-mt-0">
+                ◆それぞれの項目について100点満点はどういう状態なのか考えてみましょう。
+              </div>
+            </div>
 
-          </div>
-
-          <div className="p-result-insight u-mb-100">
-            ◆それぞれの項目について100点満点はどういう状態なのか考えてみましょう。
           </div>
           
           <h3>お仕事傾向</h3>
           <ResultTable answers={answers}/>
 
-          <div className="p-result-insight">
+          <div className="p-result-insight u-mb-100">
             <p>
               ◆幸せな仕事をみつけるための３つの問い（診断結果をふまえて、考えてみましょう）
             </p>
@@ -310,11 +308,18 @@ function App() {
             <p>
               行動しないと、未来は変わりません。是非、イメージして行動に移してみましょう！
             </p>
+          </div>
 
-
-
+          <div className="p-result-links c-grid u-mb-100">
+            <div className="c-grid__cell is-6 is-sp-12 u-sp-mb-20">
+              <Link target="_blank" className="c-button is-width-full" to="/tekishoku">もう一度診断をうける</Link>
+            </div>
+            <div className="c-grid__cell is-6 is-sp-12">
+              <a href="http://a-trio.net/" target="_blank" className="c-button  is-width-full">a-trio のWebサイトへ</a>
+            </div>
           </div>
         </>)}/>
+
 
 
       </div>

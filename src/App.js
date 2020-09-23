@@ -295,7 +295,7 @@ function App() {
           <h3>お仕事傾向</h3>
           <ResultTable answers={answers}/>
 
-          <div className="p-result-insight u-mb-100">
+          <div className="p-result-insight">
             <p>
               ◆幸せな仕事をみつけるための３つの問い（診断結果をふまえて、考えてみましょう）
             </p>
@@ -310,7 +310,7 @@ function App() {
             </p>
           </div>
 
-          <div className="p-result-links c-grid u-mb-100">
+          <div className="p-result-links c-grid u-mb-100 u-mt-100">
             <div className="c-grid__cell is-6 is-sp-12 u-sp-mb-20">
               <Link target="_blank" className="c-button is-width-full" to="/tekishoku">もう一度診断をうける</Link>
             </div>

@@ -353,3 +353,9 @@ h2{
   }
 
 }
+
+.p-result-links{
+  @include mq('print'){
+    display: none;
+  }
+}

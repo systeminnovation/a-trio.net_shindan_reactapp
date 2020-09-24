@@ -21,6 +21,13 @@
     font-size: 1.7rem;
 
 
+    &.is-sealed{
+
+        background: #aaa;
+        border-top: lighten(#aaa, 20%) 3px solid; 
+        border-bottom: darken(#aaa, 10%) 3px solid; 
+
+    }
 
     &.is-width-full{
         display: flex; //block

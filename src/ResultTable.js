@@ -1,6 +1,6 @@
 import React  from 'react';
 
-function calcSum (answers, category){
+export function calcSum (answers, category){
   if(Object.keys(answers[category]).find( (qID) => typeof answers[category][qID] !== "number" ) ){
     return null;
   }

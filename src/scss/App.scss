@@ -220,14 +220,17 @@ h2{
 
 .c-input-text{
   border: 1px solid #eee;
+  padding: 5px;
   font-size:1.6rem;
 }
 
 .c-input-number{
   border: 0;
   border-bottom: 1px solid #ccc;
-  text-align: right;
+  padding: 5px;
   width: 80px;
+
+  text-align: right;
   font-size:1.6rem;
 }
 
@@ -333,7 +336,7 @@ h2{
   th{
     text-align: left;
     line-height: 1.2;
-    padding: 10px 0;
+    padding: 15px 0;
 
     small{
       color: #888;

@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import './scss/App.scss';
 import './ChoicesTable.js';
 import ChoicesTable from './ChoicesTable.js';
-import ResultTable from './ResultTable.js';
+import ResultTable, {calcSum} from './ResultTable.js';
 import siteLogo from './img/site-logo.jpg';
 
 import { RadarChart, PolarGrid, PolarRadiusAxis,  PolarAngleAxis, Radar, Tooltip} from 'recharts';
 
-import { BrowserRouter as Router, Route,  Link, useLocation } from 'react-router-dom'
+import { BrowserRouter as Router, Route,  Link, useLocation, Redirect} from 'react-router-dom'
 
 
 import ManzokuInput from './ManzokuInput';
@@ -46,6 +46,9 @@ function App() {
     shumi: 50,
     busshitsu: 50,
   });
+
+  const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
 
   //表示させたいデータ群
   const dataRadar = Object.keys(manzokus).map(key=>{
@@ -108,6 +111,38 @@ function App() {
 
   };
 
+
+  //満足度に全て 0 - 100 の数字が入っているか
+  const hasManzoku = Object.keys(manzokus).reduce((hasManzoku,currentKey)=>{
+    const hasNumber = 
+      typeof manzokus[currentKey] === "number" &&
+      0 <= manzokus[currentKey] &&  
+      manzokus[currentKey] <= 100;
+    return hasManzoku && hasNumber;
+  }, true);
+
+  const hasAnswers =
+    typeof calcSum(answers, "human") === "number" &&  
+    typeof calcSum(answers, "creative") === "number" &&  
+    typeof calcSum(answers, "organization") === "number" &&  
+    typeof calcSum(answers, "stability") === "number";
+
+  const hasName = userName && typeof userName === "string" && userName.length > 0;
+
+  var emailregexp = /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/;
+  const hasEmail = userEmail && typeof userEmail === "string" && userEmail.length > 0 &&
+    emailregexp.test(userEmail)
+  ;
+
+  const isCompleted = hasManzoku && hasAnswers && hasName && hasEmail;
+
+  console.log({
+    hasManzoku,
+    hasAnswers,
+    hasName,
+    hasEmail
+  });
+
   return (
     <Router>
 
@@ -169,64 +204,64 @@ function App() {
 
           <ChoicesTable 
             questionTitle="いちばん満足できるのは、自分の技能と努力の結果として何かを成し得たときだ" 
-            categoryId="organization" questionId="q3" onChange={onSelectHandler} />
+            categoryId="organization" questionId="q3" answers={answers} onChange={onSelectHandler} />
           <ChoicesTable 
             questionTitle="既成概念にとらわれない発想ができる" 
-            categoryId="creative" questionId="q2" onChange={onSelectHandler} />
+            categoryId="creative" questionId="q2" answers={answers} onChange={onSelectHandler} />
           <ChoicesTable 
             questionTitle="人から感謝される仕事がしたい" 
-            categoryId="human" questionId="q1" onChange={onSelectHandler} />
+            categoryId="human" questionId="q1" answers={answers} onChange={onSelectHandler} />
           <ChoicesTable 
             questionTitle="自分で事業を立ち上げ、軌道に乗せていくことが夢だ" 
-            categoryId="organization" questionId="q5" onChange={onSelectHandler} />
+            categoryId="organization" questionId="q5" answers={answers} onChange={onSelectHandler} />
           <ChoicesTable 
             questionTitle="自由と裁量より、保障と安定のほうが自分にとっては大切だ" 
-            categoryId="stability" questionId="q1" onChange={onSelectHandler} />
+            categoryId="stability" questionId="q1" answers={answers} onChange={onSelectHandler} />
           <ChoicesTable 
             questionTitle="結果や内容で評価される職場で働きたい" 
-            categoryId="creative" questionId="q1" onChange={onSelectHandler} />
+            categoryId="creative" questionId="q1" answers={answers} onChange={onSelectHandler} />
           <ChoicesTable 
             questionTitle="よいキャリアだと実感できるのは、自分なりのアイデアと技能を元にして起業するときだ" 
-            categoryId="organization" questionId="q4" onChange={onSelectHandler} />
+            categoryId="organization" questionId="q4" answers={answers} onChange={onSelectHandler} />
           <ChoicesTable 
             questionTitle="意にそぐわない配置をして雇用を脅かすような組織には長くとどまろうとは思わない" 
-            categoryId="stability" questionId="q2" onChange={onSelectHandler} />
+            categoryId="stability" questionId="q2" answers={answers} onChange={onSelectHandler} />
           <ChoicesTable 
             questionTitle="対人サービスの仕事に興味がある" 
-            categoryId="human" questionId="q2" onChange={onSelectHandler} />
+            categoryId="human" questionId="q2" answers={answers} onChange={onSelectHandler} />
           <ChoicesTable 
             questionTitle="こだわりが強いほうだ" 
-            categoryId="creative" questionId="q3" onChange={onSelectHandler} />
+            categoryId="creative" questionId="q3" answers={answers} onChange={onSelectHandler} />
           <ChoicesTable 
             questionTitle="仕事は自分で作るものだと思う" 
-            categoryId="creative" questionId="q4" onChange={onSelectHandler} />
+            categoryId="creative" questionId="q4" answers={answers} onChange={onSelectHandler} />
           <ChoicesTable 
             questionTitle="話すことが得意である" 
-            categoryId="human" questionId="q3" onChange={onSelectHandler} />
+            categoryId="human" questionId="q3" answers={answers} onChange={onSelectHandler} />
           <ChoicesTable 
             questionTitle="ふだん組織の中では、安全と保障を実感できる仕事を求めている" 
-            categoryId="stability" questionId="q3" onChange={onSelectHandler} />
+            categoryId="stability" questionId="q3" answers={answers} onChange={onSelectHandler} />
           <ChoicesTable 
             questionTitle="キャリアで安定と保障を実感できるのが夢だ" 
-            categoryId="stability" questionId="q4" onChange={onSelectHandler} />
+            categoryId="stability" questionId="q4" answers={answers} onChange={onSelectHandler} />
           <ChoicesTable 
             questionTitle="コミュニケーションが得意" 
-            categoryId="human" questionId="q4" onChange={onSelectHandler} />
+            categoryId="human" questionId="q4" answers={answers} onChange={onSelectHandler} />
           <ChoicesTable 
             questionTitle="自分の作品を作るような仕事がしたい" 
-            categoryId="creative" questionId="q5" onChange={onSelectHandler} />
+            categoryId="creative" questionId="q5" answers={answers} onChange={onSelectHandler} />
           <ChoicesTable 
             questionTitle="人と関わる仕事がしたい" 
-            categoryId="human" questionId="q5" onChange={onSelectHandler} />
+            categoryId="human" questionId="q5" answers={answers} onChange={onSelectHandler} />
           <ChoicesTable 
             questionTitle="自分で会社を起こす元となりそうなアイデアをいつも注意して探している" 
-            categoryId="organization" questionId="q1" onChange={onSelectHandler} />
+            categoryId="organization" questionId="q1" answers={answers} onChange={onSelectHandler} />
           <ChoicesTable 
             questionTitle="どこかの組織で高い地位を得るより、自分自身で事業を起こすことのほうが大切だと思う" 
-            categoryId="organization" questionId="q2" onChange={onSelectHandler} />
+            categoryId="organization" questionId="q2" answers={answers} onChange={onSelectHandler} />
           <ChoicesTable 
             questionTitle="自分の職業人生でいちばん満足できるのは、経済面・雇用面での安定を感じられるときだ" 
-            categoryId="stability" questionId="q5" onChange={onSelectHandler} />
+            categoryId="stability" questionId="q5" answers={answers} onChange={onSelectHandler} />
 
 
           <table className="p-info-table u-mt-20 u-mb-20">
@@ -237,23 +272,63 @@ function App() {
                   <br className="u-sp"/>
                   <small>ニックネーム可</small>
                 </th>
-                <td><input className="c-input-text" type="text"/></td>
+                <td><input className="c-input-text" type="text" value={userName} onChange={(e)=>setUserName(e.target.value)}/></td>
               </tr>
               <tr>
                 <th>メール<br className="u-sp"/>アドレス</th>
-                <td><input className="c-input-text" type="email"/></td>
+                <td><input className="c-input-text" type="email" value={userEmail} onChange={(e)=>setUserEmail(e.target.value)}/></td>
               </tr>
             </tbody>
           </table> 
+
+          <div className="c-content-column">
+
+            <ul>
+              {
+                !hasManzoku ?
+                  <li>全ての満足度に回答しましょう。</li>
+                  :null
+              }
+              {
+                !hasAnswers ?
+                  <li>全ての質問に回答しましょう。</li>
+                  :null
+              }
+              {
+                !hasName ?
+                  <li>お名前を教えてください。<br/>ニックネームでも可です。</li>
+                  :null
+              }
+              {
+                !hasEmail ?
+                  <li>メールアドレスを教えてください。<br/>診断結果をお送りします。</li>
+                  :null
+              }
+            </ul>
+
+          </div>
           
           <p className="u-tac u-mb-100">
-            <Link to="/tekishoku/result" className="c-button is-center">結果を見る</Link>
+            {
+              isCompleted ? 
+                <Link to="/tekishoku/result" className="c-button is-center ">結果を見る</Link>
+                :
+                <>
+                  <span className="c-button is-center is-sealed">結果を見る</span>
+
+                </>
+            }
           </p>
+
+          
+
 
         </>)}/>
 
-        <Route path='/tekishoku/result' render={()=>( <>
-          <h2 className="u-tac">診断結果</h2>
+        <Route path='/tekishoku/result' render={()=>( 
+          !isCompleted ? <Redirect to="/tekishoku"/> :
+        <>
+          <h2 className="u-tac">{userName}さんの診断結果</h2>
 
           <h3 className="u-tal">現在の満足度は？</h3>
           <div className="c-grid p-radar-chart">
@@ -314,10 +389,10 @@ function App() {
 
           <div className="p-result-links c-grid u-mb-100 u-mt-100">
             <div className="c-grid__cell is-6 is-sp-12 u-sp-mb-20">
-              <Link target="_blank" className="c-button is-width-full" to="/tekishoku">もう一度診断をうける</Link>
+              <Link target="_blank" rel="noopener noreferrer" className="c-button is-width-full" to="/tekishoku">もう一度診断をうける</Link>
             </div>
             <div className="c-grid__cell is-6 is-sp-12">
-              <a href="http://a-trio.net/" target="_blank" className="c-button  is-width-full">a-trio のWebサイトへ</a>
+              <a href="http://a-trio.net/" target="_blank" rel="noopener noreferrer" className="c-button  is-width-full">a-trio のWebサイトへ</a>
             </div>
           </div>
         </>)}/>

@@ -10,7 +10,8 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
-    "recharts": "^1.8.5"
+    "recharts": "^1.8.5",
+    "superagent": "^6.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -33,7 +34,7 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "/tekishoku",
+  "homepage": "/atoriotest/tekishoku",
   "devDependencies": {
     "react-rangeslider": "^2.2.0",
     "react-router": "^5.2.0",

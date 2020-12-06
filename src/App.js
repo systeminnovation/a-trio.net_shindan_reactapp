@@ -4,14 +4,11 @@ import './ChoicesTable.js';
 import ChoicesTable from './ChoicesTable.js';
 import ResultTable, {calcSum} from './ResultTable.js';
 import siteLogo from './img/site-logo.jpg';
-
 import { RadarChart, PolarGrid, PolarRadiusAxis,  PolarAngleAxis, Radar, Tooltip} from 'recharts';
-
-import { BrowserRouter as Router, Route,  Link, useLocation, Redirect} from 'react-router-dom'
-
-
+import { BrowserRouter as Router, Route, Link, useLocation, useHistory, Redirect} from 'react-router-dom'
 import ManzokuInput from './ManzokuInput';
 
+import superagent from 'superagent';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -59,6 +56,7 @@ function App() {
       value: manzoku
     };
   });
+
   /*
   [
     { rank: '国語', value: 120 },
@@ -143,11 +141,28 @@ function App() {
     hasEmail
   });
 
+
+
+  const questionPageProps = {
+    onChangeManzoku,
+    manzokus,
+    onSelectHandler,
+    answers,
+    userEmail,
+    userName,
+    setUserName,
+    setUserEmail,
+    hasManzoku,
+    hasAnswers,
+    hasName,
+    hasEmail,
+    isCompleted,
+  };
+
   return (
-    <Router>
+    <Router basename="/atoriotest/tekishoku">
 
       <ScrollToTop></ScrollToTop>
-
 
       <div className="c-content-column">
         <h1 className="p-site-logo">
@@ -155,178 +170,16 @@ function App() {
           <span className="e-title">幸せなお仕事診断</span>
         </h1>
 
-        <Route exact path='/' render={()=>(<>
-          <Link to="/tekishoku">適職診断へ</Link>
-        </>)} />
-        <Route exact path='/tekishoku' render={()=>( <>
+        <Route exact path='/'>
+          <QuestionPage {...questionPageProps}>
 
-          <p className="u-tac u-mb-20">あなたは今、自分の状況にどれくらい満足していますか？</p>
-          <p className="p-description">
-            “幸せなおしごと・働き方”探しは、自分についてじっくり考えることから始まります。<br/><br/>
-
-            キャリアデザインを考える場合、自分だけでなく、家族など周りの人達へも影響を与えること
-            があります。だからこそ、自分の価値観を大切に、将来のビジョンをイメージしておくことが、
-            自分や家族の幸せのためにも大切なことなのです。<br/><br/>
-
-            後半は適職を探すヒントにしていただくための診断です。<br/><br/>
-
-            私にとっての幸せな働き方・おしごとは何か、是非、一緒に考えていきましょう。<br/>
-          </p>
-
-
-          <h2>現在の満足度診断</h2>
-          <p className="u-mb-20">
-            あなたは現在の生活にどの程度満足していますか？ それぞれの項目の満足度を0〜100%で数値化してみましょう。
-          </p>
-
-
-          <ManzokuInput title="仕事" 
-            defaultValue={manzokus["shigoto"]} onChange={onChangeManzoku("shigoto")}/>
-          <ManzokuInput title="お金" 
-            defaultValue={manzokus["okane"]} onChange={onChangeManzoku("okane")}/>
-          <ManzokuInput title="健康" 
-            defaultValue={manzokus["kenkou"]} onChange={onChangeManzoku("kenkou")}/>
-          <ManzokuInput title="愛情（家族・恋人）" 
-            defaultValue={manzokus["aijou"]} onChange={onChangeManzoku("aijou")}/>
-
-          <ManzokuInput title="友人関係" 
-            defaultValue={manzokus["yuujin"]} onChange={onChangeManzoku("yuujin")}/>
-          <ManzokuInput title="知識・学び" 
-            defaultValue={manzokus["chishiki" ]} onChange={onChangeManzoku("chishiki")}/>
-          <ManzokuInput title="趣味" 
-            defaultValue={manzokus["shumi" ]} onChange={onChangeManzoku("shumi")}/>
-          <ManzokuInput title="住んでいる場所・<br/>環境など物質面" 
-            defaultValue={manzokus["busshitsu" ]} onChange={onChangeManzoku("busshitsu")}/>
-
-          <h2>おしごと傾向診断 簡易版</h2>
-          <p>１：全くそうではない　<br/>2：そうではない　<br/>3：その通り　<br/>4：全くその通り </p>
-          <p>のうち、当てはまるものを選んでください。考え込まずに、直感で答えましょう。</p>
-
-          <ChoicesTable 
-            questionTitle="いちばん満足できるのは、自分の技能と努力の結果として何かを成し得たときだ" 
-            categoryId="organization" questionId="q3" answers={answers} onChange={onSelectHandler} />
-          <ChoicesTable 
-            questionTitle="既成概念にとらわれない発想ができる" 
-            categoryId="creative" questionId="q2" answers={answers} onChange={onSelectHandler} />
-          <ChoicesTable 
-            questionTitle="人から感謝される仕事がしたい" 
-            categoryId="human" questionId="q1" answers={answers} onChange={onSelectHandler} />
-          <ChoicesTable 
-            questionTitle="自分で事業を立ち上げ、軌道に乗せていくことが夢だ" 
-            categoryId="organization" questionId="q5" answers={answers} onChange={onSelectHandler} />
-          <ChoicesTable 
-            questionTitle="自由と裁量より、保障と安定のほうが自分にとっては大切だ" 
-            categoryId="stability" questionId="q1" answers={answers} onChange={onSelectHandler} />
-          <ChoicesTable 
-            questionTitle="結果や内容で評価される職場で働きたい" 
-            categoryId="creative" questionId="q1" answers={answers} onChange={onSelectHandler} />
-          <ChoicesTable 
-            questionTitle="よいキャリアだと実感できるのは、自分なりのアイデアと技能を元にして起業するときだ" 
-            categoryId="organization" questionId="q4" answers={answers} onChange={onSelectHandler} />
-          <ChoicesTable 
-            questionTitle="意にそぐわない配置をして雇用を脅かすような組織には長くとどまろうとは思わない" 
-            categoryId="stability" questionId="q2" answers={answers} onChange={onSelectHandler} />
-          <ChoicesTable 
-            questionTitle="対人サービスの仕事に興味がある" 
-            categoryId="human" questionId="q2" answers={answers} onChange={onSelectHandler} />
-          <ChoicesTable 
-            questionTitle="こだわりが強いほうだ" 
-            categoryId="creative" questionId="q3" answers={answers} onChange={onSelectHandler} />
-          <ChoicesTable 
-            questionTitle="仕事は自分で作るものだと思う" 
-            categoryId="creative" questionId="q4" answers={answers} onChange={onSelectHandler} />
-          <ChoicesTable 
-            questionTitle="話すことが得意である" 
-            categoryId="human" questionId="q3" answers={answers} onChange={onSelectHandler} />
-          <ChoicesTable 
-            questionTitle="ふだん組織の中では、安全と保障を実感できる仕事を求めている" 
-            categoryId="stability" questionId="q3" answers={answers} onChange={onSelectHandler} />
-          <ChoicesTable 
-            questionTitle="キャリアで安定と保障を実感できるのが夢だ" 
-            categoryId="stability" questionId="q4" answers={answers} onChange={onSelectHandler} />
-          <ChoicesTable 
-            questionTitle="コミュニケーションが得意" 
-            categoryId="human" questionId="q4" answers={answers} onChange={onSelectHandler} />
-          <ChoicesTable 
-            questionTitle="自分の作品を作るような仕事がしたい" 
-            categoryId="creative" questionId="q5" answers={answers} onChange={onSelectHandler} />
-          <ChoicesTable 
-            questionTitle="人と関わる仕事がしたい" 
-            categoryId="human" questionId="q5" answers={answers} onChange={onSelectHandler} />
-          <ChoicesTable 
-            questionTitle="自分で会社を起こす元となりそうなアイデアをいつも注意して探している" 
-            categoryId="organization" questionId="q1" answers={answers} onChange={onSelectHandler} />
-          <ChoicesTable 
-            questionTitle="どこかの組織で高い地位を得るより、自分自身で事業を起こすことのほうが大切だと思う" 
-            categoryId="organization" questionId="q2" answers={answers} onChange={onSelectHandler} />
-          <ChoicesTable 
-            questionTitle="自分の職業人生でいちばん満足できるのは、経済面・雇用面での安定を感じられるときだ" 
-            categoryId="stability" questionId="q5" answers={answers} onChange={onSelectHandler} />
-
-
-          <table className="p-info-table u-mt-20 u-mb-20">
-            <tbody>
-              <tr>
-                <th>
-                  お名前
-                  <br className="u-sp"/>
-                  <small>ニックネーム可</small>
-                </th>
-                <td><input className="c-input-text" type="text" value={userName} onChange={(e)=>setUserName(e.target.value)}/></td>
-              </tr>
-              <tr>
-                <th>メール<br className="u-sp"/>アドレス</th>
-                <td><input className="c-input-text" type="email" value={userEmail} onChange={(e)=>setUserEmail(e.target.value)}/></td>
-              </tr>
-            </tbody>
-          </table> 
-
-          <div className="c-content-column">
-
-            <ul>
-              {
-                !hasManzoku ?
-                  <li>全ての満足度に回答しましょう。</li>
-                  :null
-              }
-              {
-                !hasAnswers ?
-                  <li>全ての質問に回答しましょう。</li>
-                  :null
-              }
-              {
-                !hasName ?
-                  <li>お名前を教えてください。<br/>ニックネームでも可です。</li>
-                  :null
-              }
-              {
-                !hasEmail ?
-                  <li>メールアドレスを教えてください。<br/>診断結果をお送りします。</li>
-                  :null
-              }
-            </ul>
-
-          </div>
-          
-          <p className="u-tac u-mb-100">
-            {
-              isCompleted ? 
-                <Link to="/tekishoku/result" className="c-button is-center ">結果を見る</Link>
-                :
-                <>
-                  <span className="c-button is-center is-sealed">結果を見る</span>
-
-                </>
-            }
-          </p>
-
+          </QuestionPage>
           
 
+        </Route>
 
-        </>)}/>
-
-        <Route path='/tekishoku/result' render={()=>( 
-          !isCompleted ? <Redirect to="/tekishoku"/> :
+        <Route path='/result' render={()=>( 
+          !isCompleted ? <Redirect to="/"/> :
         <>
           <h2 className="u-tac">{userName}さんの診断結果</h2>
 
@@ -389,7 +242,7 @@ function App() {
 
           <div className="p-result-links c-grid u-mb-100 u-mt-100">
             <div className="c-grid__cell is-6 is-sp-12 u-sp-mb-20">
-              <Link target="_blank" rel="noopener noreferrer" className="c-button is-width-full" to="/tekishoku">もう一度診断をうける</Link>
+              <Link target="_blank" rel="noopener noreferrer" className="c-button is-width-full" to="/">もう一度診断をうける</Link>
             </div>
             <div className="c-grid__cell is-6 is-sp-12">
               <a href="http://a-trio.net/" target="_blank" rel="noopener noreferrer" className="c-button  is-width-full">a-trio のWebサイトへ</a>
@@ -404,6 +257,293 @@ function App() {
 
     </Router>
   );
+}
+
+function QuestionPage(props){
+  const {
+    onChangeManzoku,
+    manzokus,
+    onSelectHandler,
+    answers,
+    userEmail,
+    userName,
+    setUserName,
+    setUserEmail,
+    hasManzoku,
+    hasAnswers,
+    hasName,
+    hasEmail,
+    isCompleted,
+  } = props;
+
+
+  let history = useHistory();
+
+  const onResultClickHandler = (e)=>{
+    console.log(e);
+    console.log("結果ボタンがクリックされました。");
+
+    /*
+      Content-Type: multipart/form-data
+      accept: application/json
+      accept-encoding: gzip, deflate
+      user-agent: Mozilla
+    
+    */
+
+    //TODO 名前などのバリデーション
+    /*
+
+        {
+          !hasManzoku ?
+            <li>全ての満足度に回答しましょう。</li>
+            :null
+        }
+        {
+          !hasAnswers ?
+            <li>全ての質問に回答しましょう。</li>
+            :null
+        }
+        {
+          !hasName ?
+            <li>お名前を教えてください。<br/>ニックネームでも可です。</li>
+            :null
+        }
+        {
+          !hasEmail ?
+            <li>メールアドレスを教えてください。<br/>診断結果をお送りします。</li>
+            :null
+        }
+
+    */ 
+
+    if(isCompleted){
+      let userResult = "";
+      //診断結果の文字列を生成
+
+      userResult += 
+        "1. 満足度調査\n" +
+        ` 仕事:${manzokus["shigoto"]}%\n`+
+        ` お金: ${manzokus["okane"]}%\n`+
+        ` 健康: ${manzokus["kenkou"]}%\n`+
+        ` 愛情（家族・恋人）:${manzokus["aijou"]} %\n` +
+        ` 友人関係: ${manzokus["yuujin"]}%\n` +
+        ` 知識・学び: ${manzokus["chishiki" ]}%\n`  +
+        ` 趣味: ${manzokus["shumi" ]}%\n` +
+        ` 住んでいる場所・環境など物質面: ${manzokus["busshitsu" ]}%\n\n`;
+        
+
+      userResult += ""+
+        "2. お仕事傾向\n"+
+        ` 非対人←→対人: ${calcSum(answers, "human")}%\n`+
+        ` 組織←→非組織: ${calcSum(answers, "creative")}%\n`+
+        ` 革新的←→安定型: ${calcSum(answers, "organization")}%\n`+
+        ` 仕事をこなす←→仕事を作る: ${calcSum(answers, "stability")}%\n`;
+
+        
+
+
+      superagent
+        //.post('http://localhost:8002/wp-json/contact-form-7/v1/contact-forms/6/feedback')
+
+        .post('http://shokikawaguchi.sakura.ne.jp/atoriotest/wp-json/contact-form-7/v1/contact-forms/272/feedback')
+
+        
+        .accept('application/json') 
+        .field('your-name', userName) //TODO 名前を入れる
+        .field('your-email', userEmail)
+        .field('your-result', userResult )
+        .end((err, res) => {
+          // Calling the end function will send the request
+          console.log(err);
+          const json = JSON.parse(res.text);
+          console.log(json)
+
+          switch(json.status){
+          case "mail_sent":
+            console.log(json.message);
+            //移動する
+            alert(json.message);
+            
+            console.log({history});
+
+            history.push("/result")
+            break;
+          case "validation_failed":
+            alert("メールアドレスが正しくありません。");
+            break;
+          }
+        });
+    }
+    else{
+      alert("必須項目を入力してください。");
+
+
+    }
+  }
+
+  return ( <>
+    <p className="u-tac u-mb-20">あなたは今、自分の状況にどれくらい満足していますか？</p>
+    <p className="p-description">
+      “幸せなおしごと・働き方”探しは、自分についてじっくり考えることから始まります。<br/><br/>
+
+      キャリアデザインを考える場合、自分だけでなく、家族など周りの人達へも影響を与えること
+      があります。だからこそ、自分の価値観を大切に、将来のビジョンをイメージしておくことが、
+      自分や家族の幸せのためにも大切なことなのです。<br/><br/>
+
+      後半は適職を探すヒントにしていただくための診断です。<br/><br/>
+
+      私にとっての幸せな働き方・おしごとは何か、是非、一緒に考えていきましょう。<br/>
+    </p>
+
+
+    <h2>現在の満足度診断</h2>
+    <p className="u-mb-20">
+      あなたは現在の生活にどの程度満足していますか？ それぞれの項目の満足度を0〜100%で数値化してみましょう。
+    </p>
+
+
+    <ManzokuInput title="仕事" 
+      defaultValue={manzokus["shigoto"]} onChange={onChangeManzoku("shigoto")}/>
+    <ManzokuInput title="お金" 
+      defaultValue={manzokus["okane"]} onChange={onChangeManzoku("okane")}/>
+    <ManzokuInput title="健康" 
+      defaultValue={manzokus["kenkou"]} onChange={onChangeManzoku("kenkou")}/>
+    <ManzokuInput title="愛情（家族・恋人）" 
+      defaultValue={manzokus["aijou"]} onChange={onChangeManzoku("aijou")}/>
+
+    <ManzokuInput title="友人関係" 
+      defaultValue={manzokus["yuujin"]} onChange={onChangeManzoku("yuujin")}/>
+    <ManzokuInput title="知識・学び" 
+      defaultValue={manzokus["chishiki" ]} onChange={onChangeManzoku("chishiki")}/>
+    <ManzokuInput title="趣味" 
+      defaultValue={manzokus["shumi" ]} onChange={onChangeManzoku("shumi")}/>
+    <ManzokuInput title="住んでいる場所・<br/>環境など物質面" 
+      defaultValue={manzokus["busshitsu" ]} onChange={onChangeManzoku("busshitsu")}/>
+
+    <h2>おしごと傾向診断 簡易版</h2>
+    <p>１：全くそうではない　<br/>2：そうではない　<br/>3：その通り　<br/>4：全くその通り </p>
+    <p>のうち、当てはまるものを選んでください。考え込まずに、直感で答えましょう。</p>
+
+    <ChoicesTable 
+      questionTitle="いちばん満足できるのは、自分の技能と努力の結果として何かを成し得たときだ" 
+      categoryId="organization" questionId="q3" answers={answers} onChange={onSelectHandler} />
+    <ChoicesTable 
+      questionTitle="既成概念にとらわれない発想ができる" 
+      categoryId="creative" questionId="q2" answers={answers} onChange={onSelectHandler} />
+    <ChoicesTable 
+      questionTitle="人から感謝される仕事がしたい" 
+      categoryId="human" questionId="q1" answers={answers} onChange={onSelectHandler} />
+    <ChoicesTable 
+      questionTitle="自分で事業を立ち上げ、軌道に乗せていくことが夢だ" 
+      categoryId="organization" questionId="q5" answers={answers} onChange={onSelectHandler} />
+    <ChoicesTable 
+      questionTitle="自由と裁量より、保障と安定のほうが自分にとっては大切だ" 
+      categoryId="stability" questionId="q1" answers={answers} onChange={onSelectHandler} />
+    <ChoicesTable 
+      questionTitle="結果や内容で評価される職場で働きたい" 
+      categoryId="creative" questionId="q1" answers={answers} onChange={onSelectHandler} />
+    <ChoicesTable 
+      questionTitle="よいキャリアだと実感できるのは、自分なりのアイデアと技能を元にして起業するときだ" 
+      categoryId="organization" questionId="q4" answers={answers} onChange={onSelectHandler} />
+    <ChoicesTable 
+      questionTitle="意にそぐわない配置をして雇用を脅かすような組織には長くとどまろうとは思わない" 
+      categoryId="stability" questionId="q2" answers={answers} onChange={onSelectHandler} />
+    <ChoicesTable 
+      questionTitle="対人サービスの仕事に興味がある" 
+      categoryId="human" questionId="q2" answers={answers} onChange={onSelectHandler} />
+    <ChoicesTable 
+      questionTitle="こだわりが強いほうだ" 
+      categoryId="creative" questionId="q3" answers={answers} onChange={onSelectHandler} />
+    <ChoicesTable 
+      questionTitle="仕事は自分で作るものだと思う" 
+      categoryId="creative" questionId="q4" answers={answers} onChange={onSelectHandler} />
+    <ChoicesTable 
+      questionTitle="話すことが得意である" 
+      categoryId="human" questionId="q3" answers={answers} onChange={onSelectHandler} />
+    <ChoicesTable 
+      questionTitle="ふだん組織の中では、安全と保障を実感できる仕事を求めている" 
+      categoryId="stability" questionId="q3" answers={answers} onChange={onSelectHandler} />
+    <ChoicesTable 
+      questionTitle="キャリアで安定と保障を実感できるのが夢だ" 
+      categoryId="stability" questionId="q4" answers={answers} onChange={onSelectHandler} />
+    <ChoicesTable 
+      questionTitle="コミュニケーションが得意" 
+      categoryId="human" questionId="q4" answers={answers} onChange={onSelectHandler} />
+    <ChoicesTable 
+      questionTitle="自分の作品を作るような仕事がしたい" 
+      categoryId="creative" questionId="q5" answers={answers} onChange={onSelectHandler} />
+    <ChoicesTable 
+      questionTitle="人と関わる仕事がしたい" 
+      categoryId="human" questionId="q5" answers={answers} onChange={onSelectHandler} />
+    <ChoicesTable 
+      questionTitle="自分で会社を起こす元となりそうなアイデアをいつも注意して探している" 
+      categoryId="organization" questionId="q1" answers={answers} onChange={onSelectHandler} />
+    <ChoicesTable 
+      questionTitle="どこかの組織で高い地位を得るより、自分自身で事業を起こすことのほうが大切だと思う" 
+      categoryId="organization" questionId="q2" answers={answers} onChange={onSelectHandler} />
+    <ChoicesTable 
+      questionTitle="自分の職業人生でいちばん満足できるのは、経済面・雇用面での安定を感じられるときだ" 
+      categoryId="stability" questionId="q5" answers={answers} onChange={onSelectHandler} />
+
+
+    <table className="p-info-table u-mt-20 u-mb-20">
+      <tbody>
+        <tr>
+          <th>
+            お名前
+            <br className="u-sp"/>
+            <small>ニックネーム可</small>
+          </th>
+          <td><input className="c-input-text" type="text" value={userName} onChange={(e)=>setUserName(e.target.value)}/></td>
+        </tr>
+        <tr>
+          <th>メール<br className="u-sp"/>アドレス</th>
+          <td><input className="c-input-text" type="email" value={userEmail} onChange={(e)=>setUserEmail(e.target.value)}/></td>
+        </tr>
+      </tbody>
+    </table> 
+
+    <div className="c-content-column">
+
+      <ul>
+        {
+          !hasManzoku ?
+            <li>全ての満足度に回答しましょう。</li>
+            :null
+        }
+        {
+          !hasAnswers ?
+            <li>全ての質問に回答しましょう。</li>
+            :null
+        }
+        {
+          !hasName ?
+            <li>お名前を教えてください。<br/>ニックネームでも可です。</li>
+            :null
+        }
+        {
+          !hasEmail ?
+            <li>メールアドレスを教えてください。<br/>診断結果をお送りします。</li>
+            :null
+        }
+      </ul>
+
+    </div>
+    
+    <p className="u-tac u-mb-100">
+      {
+        isCompleted ? 
+          <button onClick={onResultClickHandler} className="c-button is-center">結果を見る</button>
+          :
+          <>
+            <span className="c-button is-center is-sealed">結果を見る</span>
+
+          </>
+      }
+    </p>
+
+    </>);
 }
 
 
